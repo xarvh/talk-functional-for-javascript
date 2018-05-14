@@ -78,17 +78,6 @@ main =
             -> The collection of all the mutable information we need to render the page
             """
 
-        {-
-           , md
-               """
-               The "model" is the collection of data structures
-               that we use to represent the state.
-               ```
-               // datepicker model
-
-               ```
-               """
-        -}
         , md
             -- So what's the state for our page?
             -- There is more information than we need!
@@ -122,7 +111,11 @@ main =
               ...
             ]
 
-            renderDatepicker(min(lineitems, 'start'), max(lineitems, 'end'), changeAll)
+            renderDatepicker({
+              startDate: minOf(lineitems, "start"),
+              endDate: maxOf(lineitems, "end"),
+              onChange: (start, end) => clampAllLineItems(start, end),
+            })
             ```
             -> It is *slower*, because we recalculate that min, max **every** time
             -> Our state CANNOT express an inconsistecy between main and lineitems
@@ -155,61 +148,90 @@ main =
             -> Opening a datepicker *inherently* closes all others
             -> **We make unwanted states impossible**
             """
-
-
         , md
             -- We don't need to test for loss of consistency
             -- In fact, we CAN'T even test for it!
             """
-            ## Make Unwanted States Impossible
-            -> We **can't** even test for loss of consistency
+            ```jsx
+            <Datepicker {...{
+              startDate: minOf(this.lineitems, "start"),
+              endDate: maxOf(this.lineitems, "end"),
+              isOpen: openDatepicker === "main",
+              onChange: (start, end) => this.clampAllLineItems(start, end),
+            }} />
+            ```
+            -> We **can't** even test the state update f for loss of consistency
             -> (We can test it in the render f, and that's trivial)
-            -> First we model the state, *then* we write the code to render it
-            -> Code our interfaces --> *Model first* <--
+            """
+        , md
+            """
+            Rules of thumb:
+            -> Don't extract state unnecessarily
+            -> Do it if it allows to make unwanted states impossible
+            -> Do it if it needs to be accessed by the parent component
+            """
+        , md
+            -- FIRST we model the state, THEN we think about render and update
+            """
+            ## Make Unwanted States Impossible
+
+            -> **Model first**
             -> This makes sense only with a Virtual Dom like React
             -> ML types and static type check allow to crank this technique up to 11
             """
-
         , md
             """
-            ---------
 
 
 
-
-            Break
-
-            (Questions?)
+            (We're half way. Questions so far?)
 
 
 
-
-            ---------
             """
+        , md
+            """
+            [image: lineitem datepicker object <=> main date picker object ]
 
+            -> Objects form a network of interactions that can have loops
+            -> It's difficult to think about, and difficult to maintain
+            """
+        , md
+            """
+            -> A pure function is a uni-directional pipe
 
+            [image: input -> ]==function==[ -> output]
+
+            All that matters is what goes in, and what gets out.
+
+            **Nothing else can affect it or be affected by it.**
+
+            -> When you assemble together pure functions, it's very easy to follow the flow
+            """
+        , md
+            -- a reducer is a fancy name for a function that takes the old state and produces a new state
+            """
+            [image
+              external events + oldState
+                |
+                V
+              ]=="reducer"==[ <--- split in many functions
+                |
+                V
+              new state + side effects
+                |
+                V
+              ]==render==[ <--- also split in many functions
+                |
+                V
+                DOM -> external events
+            """
         ]
 
 
 x =
     """
-#
-  “How do we update the state?”
-  -> with “reducers” (which is a fancy name for update functions)
-  -> In the example above, how do we test that the main datepicker stays consistent?
-  -> The best test is the one you don’t have to write
   -> Producing every time an entirely new state is definitely a drawback, but the advantages are worth it, and it’s why everything is moving in that direction
-
-
-#
-  “How do we generate side effects?”
-  -> This is an open problem in JS, it depends on many things and there doesn’t seem to be a consensus
-  -> Have the reducer return a function with the side effect
-  -> This will help with testing
-
-
-
-#
   -> Sometimes it's ok to have stateful components
   -> Often the state is so simple that it's not worth to extract it and involve Redux and all its boilerplate
 
@@ -223,8 +245,6 @@ x =
 
 
 #
-  [ line item date picker object <=> main date picker object ]
-  -> Objects form a network of interactions that can have loops
 
   [ messages from the world + oldState -> "reducer" function (broken in sub-functions) ->  newState -> render functions -> Html the user can interact with ]
   -> pure functions form a unidirectional assembly of pipes
