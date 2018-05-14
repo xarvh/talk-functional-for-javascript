@@ -91,6 +91,7 @@ main =
         -}
         , md
             -- So what's the state for our page?
+            -- There is more information than we need!
             """
             [image:
               * main datepicker `start: 2011-01-01, end: 2011-02-02`
@@ -100,78 +101,98 @@ main =
               * ...
             ]
             """
+        , md
+            """
+            [image:
+              * ~~main datepicker `start: 2011-01-01, end: 2011-02-02`~~~
+              * line item 1 datepicker `start: 2011-01-01, end: 2011-02-02`
+              * line item 2 datepicker `start: 2011-01-01, end: 2011-02-02`
+              * line item 3 datepicker `start: 2011-01-01, end: 2011-02-02`
+              * ...
+            ]
+
+            -> We *CANNOT* do this in OOP
+            """
+        , md
+            """
+            ```
+            lineItem: [
+              { id: 1, start: 2011-01-01, end: 2011-02-02 }
+              { id: 2, start: 2011-01-01, end: 2011-02-02 }
+              ...
+            ]
+
+            renderDatepicker(min(lineitems, 'start'), max(lineitems, 'end'), changeAll)
+            ```
+            -> It is *slower*, because we recalculate that min, max **every** time
+            -> Our state CANNOT express an inconsistecy between main and lineitems
+            -> The best test is the test you don't have to write
+            """
+        , md
+            """
+            ```
+            mainDatePickerIsOpen: false,
+            lineItems: [
+              { id: 1, start: 2011-01-01, end: 2011-02-02, isOpen: false }
+              { id: 2, start: 2011-01-01, end: 2011-02-02, isOpen: true }
+              { id: 3, start: 2011-01-01, end: 2011-02-02, isOpen: false }
+              ...
+            ]
+            ```
+            -> This model can represent two open datepickers
+            """
+        , md
+            """
+            ```
+            openDatepicker: "lineitem 2",
+            lineItems: [
+              { id: 1, start: 2011-01-01, end: 2011-02-02 }
+              { id: 2, start: 2011-01-01, end: 2011-02-02 }
+              { id: 3, start: 2011-01-01, end: 2011-02-02 }
+              ...
+            ]
+            ```
+            -> Opening a datepicker *inherently* closes all others
+            -> **We make unwanted states impossible**
+            """
+
+
+        , md
+            -- We don't need to test for loss of consistency
+            -- In fact, we CAN'T even test for it!
+            """
+            ## Make Unwanted States Impossible
+            -> We **can't** even test for loss of consistency
+            -> (We can test it in the render f, and that's trivial)
+            -> First we model the state, *then* we write the code to render it
+            -> Code our interfaces --> *Model first* <--
+            -> This makes sense only with a Virtual Dom like React
+            -> ML types and static type check allow to crank this technique up to 11
+            """
+
+        , md
+            """
+            ---------
+
+
+
+
+            Break
+
+            (Questions?)
+
+
+
+
+            ---------
+            """
+
+
         ]
 
 
 x =
     """
-
-#
-  [ main datepicker + line item date pickers, each with their state ]
-  -> redundant information
-  -> more stuff to update
-  -> more things  that can go wrong
-
-
-#
-  [ main datepicker crossed in red, lineitem datepicker state only ]
-  -> Our variables CANNOT describe an unwanted state
-
-
-
-
-
-
-
-
-#
-  [ datepicker with status: startDate, endDate, isOpen ]
-  "Datepickers can be open or closed, so it makes sense that to our state we also
-  add another variable to track whether the datepicker is open or closed"
-
-
-#
-  [ page bloated with too many open datepickers ]
-  [ datepicker statuses with many isOpen = True ]
-  "To keep the page tidy, a UI convention is that only one dropdown should be open at the time
-  But our model allows many of them to be open together."
-
-
-#
-  [ page with a single datepicker open]
-  [ list of (startDate, endDate) and single openDatePickerId variable ]
-  [ list of datepickers, with isOpen=datepickerId(lineItem) === this.state.openDatepickerId ]
-
-  lineItems.map(lineItem => renderDatepicker({
-       startDate: lineItem.startDate,
-       endDate: lineItem.endDate,
-       isOpen, datepickerId(lineItem) === this.state.openDatepickerId,
-       onChange: (startDate, endDate) => **set**(lineItem.id, startDate, endDate),
-       onToggle: isOpen => this.setState({ openDatepickerId: isOpen? datepickerId(lineItem) : null }))
-
-  -> The model makes it *impossible* for more than one datepicker to be open at the same time.
-  -> Opening a datepicker *inherently* closes all others
-  -> When we test the state manipulation functions, we CANNOT EVEN TEST whether multiple datepickers will be open
-  -> (we can test it in the view tho)
-  -> The best test is the one you don’t have to write
-  -> We aren’t even using functional for the state
-
-#
-  -> We make unwanted states *impossible*
-  -> First we model the state, *then* we write the code to render it
-  -> Code our interfaces --> *Model first* <--
-  -> ML types and static type checking allow to crank this technique up to 11
-
-
-#
-  "So how do we turn that state into something that the browser can render?"
-  [ renderFunction(startDate, endDate, onChangeCallback) ]
-  -> We can do this because React ensures that ALL information is
-    reconsidered at EVERY render
-  -> Testing the Object would require us to create a full Object (which might require a lot of stuff)
-  -> if renderFunction is a pure function, it’s really easy to test
-
-
 #
   “How do we update the state?”
   -> with “reducers” (which is a fancy name for update functions)
