@@ -148,11 +148,12 @@ main =
             """
         , md
             """
-            [ Facebook page, with messages counter highlighted ]
+            ![fb](images/fb.svg)
             """
         , md
             """
-            The problem: Keep consistency **across** Objects
+            The problem: Keep consistency *across* Objects
+
             ➡ The network of update calls is unmaintainable
             """
         , md
@@ -169,24 +170,23 @@ main =
             -- So what's the state for our page?
             -- There is more information than we need!
             """
-            [image:
-              * main datepicker `start: 2011-01-01, end: 2011-02-02`
-              * line item 1 datepicker `start: 2011-01-01, end: 2011-02-02`
-              * line item 2 datepicker `start: 2011-01-01, end: 2011-02-02`
-              * line item 3 datepicker `start: 2011-01-01, end: 2011-02-02`
-              * ...
-            ]
+            * main: `start: 2011-01-01, end: 2011-02-02`
+            * lineItem1: `start: 2011-01-01, end: 2011-02-02`
+            * lineItem2: `start: 2011-01-01, end: 2011-02-02`
+            * lineItem3: `start: 2011-01-01, end: 2011-02-02`
+            * ...
+
             ➡ Let's define  our problem in terms of the app state
+
+            ➡ (We're not even talking about "datepickers" anymore!)
             """
         , md
             """
-            [image:
-              * ~~main datepicker `start: 2011-01-01, end: 2011-02-02`~~~
-              * line item 1 datepicker `start: 2011-01-01, end: 2011-02-02`
-              * line item 2 datepicker `start: 2011-01-01, end: 2011-02-02`
-              * line item 3 datepicker `start: 2011-01-01, end: 2011-02-02`
-              * ...
-            ]
+            * ~~main: `start: 2011-01-01, end: 2011-02-02`~~
+            * lineItem1: `start: 2011-01-01, end: 2011-02-02`
+            * lineItem2: `start: 2011-01-01, end: 2011-02-02`
+            * lineItem3: `start: 2011-01-01, end: 2011-02-02`
+            * ...
 
             ➡ Is this enough info to display all that we want to display?
 
@@ -195,14 +195,14 @@ main =
         , md
             """
             ```javascript
-            lineItem: [
+            lineItems: [
               { id: 1, start: 2011-01-01, end: 2011-02-02 }
               { id: 2, start: 2011-01-01, end: 2011-02-02 }
               ...
             ]
 
             ```
-            ➡ Our state CANNOT express an inconsistecy between main and lineitems
+            ➡ Our state CANNOT express the inconsistency!
             """
         , md
             """
@@ -259,6 +259,8 @@ main =
               ...
             ]
             ```
+
+            ➡ A good model helps *thinking* about the problem!
             """
         , md
             -- We don't need to test for loss of consistency
@@ -296,7 +298,16 @@ main =
 
             ➡ This makes sense only with a Virtual Dom like React
 
+            """
+        , md
+            """
             ➡ ML types and static type check allow to crank this technique up to 11
+
+            ➡ YouTube: Richard Feldman "Making impossible states impossible"
+            """
+        , md
+            """
+            # Done!
             """
         ]
 
