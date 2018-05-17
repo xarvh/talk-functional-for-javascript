@@ -170,15 +170,17 @@ main =
             -- So what's the state for our page?
             -- There is more information than we need!
             """
+            # State comes first
+
             * main: `start: 2011-01-01, end: 2011-02-02`
             * lineItem1: `start: 2011-01-01, end: 2011-02-02`
             * lineItem2: `start: 2011-01-01, end: 2011-02-02`
             * lineItem3: `start: 2011-01-01, end: 2011-02-02`
             * ...
 
-            ➡ Let's define  our problem in terms of the app state
+            ➡ *What* vs *How*
 
-            ➡ (We're not even talking about "datepickers" anymore!)
+            ➡ We define the problem in terms of the app state
             """
         , md
             """
@@ -219,11 +221,11 @@ main =
               endDate: maxOf(lineitems, "end"),
               onChange: (start, end) => clampAllLineItems(start, end),
             })
+            ```
 
             ➡ How do you test for loss of consistency?
 
             ➡ State update becomes an atomic operation
-            ```
             """
         , md
             """
@@ -268,9 +270,9 @@ main =
             """
             ```javascript
             <Datepicker {...{
-              startDate: minOf(this.lineitems, "start"),
-              endDate: maxOf(this.lineitems, "end"),
-              isOpen: openDatepicker === "main",
+              startDate: minOf(this.state.lineitems, "start"),
+              endDate: maxOf(this.state.lineitems, "end"),
+              isOpen: this.state.openDatepicker === "main",
               onOpen: () => this.setState({ openDatepicker: "main" }),
               onClose: () => this.setState({ openDatepicker: null }),
               onChange: (start, end) => this.clampAllLineItems(start, end),
