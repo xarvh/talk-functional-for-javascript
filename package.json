@@ -3,6 +3,6 @@
     "build": "elm-make Main.elm --yes --output build/app.js"
   },
   "dependencies": {
-    "elm": "^0.17.0"
+    "elm": "^0.18.0"
   }
 }

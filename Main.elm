@@ -1,10 +1,14 @@
 module Main exposing (..)
 
+import Css exposing (..)
+import Css.Elements exposing (..)
 import Slides exposing (..)
+import Slides.FragmentAnimation as FA
+import Slides.SlideAnimation as SA
 
 
 blur completion =
-    "blur(" ++ (toString <| round <| (1 - completion) * 10) ++ "px)"
+    "blur(" ++ (toString <| Basics.round <| (1 - completion) * 10) ++ "px)"
 
 
 verticalDeck : SA.Animator
@@ -66,11 +70,11 @@ elmBlueOnWhite =
         , color txtColor
         , fontFamilies [ "calibri", "sans-serif" ]
         , fontSize font
-        , fontWeight (num 400)
+        , fontWeight bold
         ]
     , h1
-        [ fontWeight (num 400)
-        , fontSize (px 38)
+        [ fontSize (px 38)
+        , fontWeight bold
         ]
     , section
         [ height (px 700)
@@ -82,7 +86,7 @@ elmBlueOnWhite =
         , property "justify-content" "center"
         , alignItems center
         ]
-    , (.) "slide-content"
+    , Css.class "slide-content"
         [ margin2 zero (px 90)
         ]
     , code
@@ -90,7 +94,7 @@ elmBlueOnWhite =
         , fontSize font
         , backgroundColor codeBgColor
         ]
-    , pre
+    , Css.Elements.pre
         [ padding (px 20)
         , fontSize font
         , backgroundColor codeBgColor
@@ -211,7 +215,7 @@ main =
             """
         , md
             """
-            ```
+            ```javascript
             lineItem: [
               { id: 1, start: 2011-01-01, end: 2011-02-02 }
               { id: 2, start: 2011-01-01, end: 2011-02-02 }
@@ -254,7 +258,7 @@ main =
             """
         , md
             """
-            ```
+            ```javascript
             mainDatePickerIsOpen: false,
             lineItems: [
               { id: 1, start: 2011-01-01, end: 2011-02-02, isOpen: false }
@@ -267,7 +271,7 @@ main =
             """
         , md
             """
-            ```
+            ```javascript
             openDatepicker: "lineitem 2",
             lineItems: [
               { id: 1, start: 2011-01-01, end: 2011-02-02 }
@@ -281,7 +285,7 @@ main =
             -- We don't need to test for loss of consistency
             -- In fact, we CAN'T even test for it!
             """
-            ```jsx
+            ```javascript
             <Datepicker {...{
               startDate: minOf(this.lineitems, "start"),
               endDate: maxOf(this.lineitems, "end"),
