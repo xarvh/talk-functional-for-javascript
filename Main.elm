@@ -3,9 +3,111 @@ module Main exposing (..)
 import Slides exposing (..)
 
 
+blur completion =
+    "blur(" ++ (toString <| round <| (1 - completion) * 10) ++ "px)"
+
+
+verticalDeck : SA.Animator
+verticalDeck status =
+    Css.asPairs <|
+        case status of
+            SA.Still ->
+                [ Css.position Css.absolute
+                ]
+
+            SA.Moving direction order completion ->
+                case order of
+                    SA.LaterSlide ->
+                        [ Css.position Css.absolute
+                        , Css.property "z-index" "1"
+                        , Css.property "filter" (blur completion)
+                        , Css.property "-webkit-filter" (blur completion)
+                        ]
+
+                    SA.EarlierSlide ->
+                        [ Css.position Css.absolute
+                        , Css.transform <| Css.translate2 zero (pct (completion * 100))
+                        , Css.property "z-index" "2"
+                        ]
+
+
+betterFade : FA.Animator
+betterFade completion =
+    Css.asPairs
+        [ Css.opacity (Css.num completion)
+        , Css.property "filter" (blur completion)
+        , Css.property "-webkit-filter" (blur completion)
+        ]
+
+
+font =
+    px 20
+
+
+bgColor =
+    rgb 255 255 255
+
+
+codeBgColor =
+    rgb 230 230 230
+
+
+txtColor =
+    hex "60B5CC"
+
+
+elmBlueOnWhite : List Css.Snippet
+elmBlueOnWhite =
+    [ body
+        [ padding zero
+        , margin zero
+        , height (pct 100)
+        , backgroundColor bgColor
+        , color txtColor
+        , fontFamilies [ "calibri", "sans-serif" ]
+        , fontSize font
+        , fontWeight (num 400)
+        ]
+    , h1
+        [ fontWeight (num 400)
+        , fontSize (px 38)
+        ]
+    , section
+        [ height (px 700)
+        , width (pct 100)
+        , backgroundColor bgColor
+        , property "background-position" "center"
+        , property "background-size" "cover"
+        , displayFlex
+        , property "justify-content" "center"
+        , alignItems center
+        ]
+    , (.) "slide-content"
+        [ margin2 zero (px 90)
+        ]
+    , code
+        [ textAlign left
+        , fontSize font
+        , backgroundColor codeBgColor
+        ]
+    , pre
+        [ padding (px 20)
+        , fontSize font
+        , backgroundColor codeBgColor
+        ]
+    , img
+        [ width (pct 100)
+        ]
+    ]
+
+
 main =
     Slides.app
-        slidesDefaultOptions
+        { slidesDefaultOptions
+            | style = elmBlueOnWhite
+            , slideAnimator = verticalDeck
+            , fragmentAnimator = betterFade
+        }
         [ md
             """
             # Making unwanted states impossible
