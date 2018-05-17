@@ -8,7 +8,7 @@ main =
         slidesDefaultOptions
         [ md
             """
-            # Functional Programming for JavaScript
+            # Making unwanted states impossible
             """
         , md
             -- "Adslot is a marketplace for online advertisement..."
@@ -31,7 +31,7 @@ main =
             * `setDates()`
             * `onDateChange()`
 
-            -> In OOP the internal state is *inaccessible*
+            -> In OOP the internal variables are *inaccessible*
             """
         , md
             -- We can get an idea of the flow of state update calls
@@ -73,8 +73,11 @@ main =
         , md
             """
             What is "state"?
-            -> *Anything* that can change in our application
+
+            -> *Anything* that can change in our application without changing your source code
+
             OR
+
             -> The collection of all the mutable information we need to render the page
             """
 
@@ -89,6 +92,7 @@ main =
               * line item 3 datepicker `start: 2011-01-01, end: 2011-02-02`
               * ...
             ]
+            -> Let's define  our problem in terms of the app state
             """
         , md
             """
@@ -99,6 +103,8 @@ main =
               * line item 3 datepicker `start: 2011-01-01, end: 2011-02-02`
               * ...
             ]
+
+            -> Is this enough info to display all that we want to display?
 
             -> We *CANNOT* do this in OOP
             """
@@ -117,9 +123,19 @@ main =
               onChange: (start, end) => clampAllLineItems(start, end),
             })
             ```
-            -> It is *slower*, because we recalculate that min, max **every** time
             -> Our state CANNOT express an inconsistecy between main and lineitems
+            -> State update becomes an atomic operation
             -> The best test is the test you don't have to write
+            """
+        ,md
+            """
+            -> This requires a Virtual Dom like React
+
+            -> In OOP, the Object decides when to rerender
+
+            -> In React, React does
+
+            -> React removes the responsibility of rendering from the Object
             """
         , md
             """
@@ -157,18 +173,23 @@ main =
               startDate: minOf(this.lineitems, "start"),
               endDate: maxOf(this.lineitems, "end"),
               isOpen: openDatepicker === "main",
+              onOpen: () => this.setState({ openDatepicker: "main" }),
+              onClose: () => this.setState({ openDatepicker: null }),
               onChange: (start, end) => this.clampAllLineItems(start, end),
             }} />
             ```
-            -> We **can't** even test the state update f for loss of consistency
-            -> (We can test it in the render f, and that's trivial)
+            -> The act of opening a dropdown **closes all others**
             """
         , md
             """
             Rules of thumb:
+
             -> Don't extract state unnecessarily
+
             -> Do it if it allows to make unwanted states impossible
+
             -> Do it if it needs to be accessed by the parent component
+
             """
         , md
             -- FIRST we model the state, THEN we think about render and update
@@ -176,9 +197,16 @@ main =
             ## Make Unwanted States Impossible
 
             -> **Model first**
+
             -> This makes sense only with a Virtual Dom like React
+
             -> ML types and static type check allow to crank this technique up to 11
             """
+        ]
+
+
+
+{-
         , md
             """
 
@@ -274,3 +302,4 @@ x =
 Union types: crocus questions
 Union type: loading, error, available
 """
+-}
