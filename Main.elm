@@ -80,7 +80,6 @@ main =
 
             -> The collection of all the mutable information we need to render the page
             """
-
         , md
             -- So what's the state for our page?
             -- There is more information than we need!
@@ -106,7 +105,7 @@ main =
 
             -> Is this enough info to display all that we want to display?
 
-            -> We *CANNOT* do this in OOP
+            -> This is NOT how OOP works!
             """
         , md
             """
@@ -117,17 +116,31 @@ main =
               ...
             ]
 
+            ```
+            -> Our state CANNOT express an inconsistecy between main and lineitems
+            """
+        , md
+            """
+            ```javascript
+            // Render line item datepickers
+            lineItems.map lineItem => renderDatepicker({
+              startDate: lineItem.start
+              endDate: lineItem.end
+              onChange: (start, end) => setLineItem(lineItem.id, start, end),
+            })
+
             renderDatepicker({
               startDate: minOf(lineitems, "start"),
               endDate: maxOf(lineitems, "end"),
               onChange: (start, end) => clampAllLineItems(start, end),
             })
-            ```
-            -> Our state CANNOT express an inconsistecy between main and lineitems
+
+            -> How do you test for loss of consistency?
+
             -> State update becomes an atomic operation
-            -> The best test is the test you don't have to write
+            ```
             """
-        ,md
+        , md
             """
             -> This requires a Virtual Dom like React
 
@@ -161,8 +174,6 @@ main =
               ...
             ]
             ```
-            -> Opening a datepicker *inherently* closes all others
-            -> **We make unwanted states impossible**
             """
         , md
             -- We don't need to test for loss of consistency
@@ -207,99 +218,99 @@ main =
 
 
 {-
-        , md
-            """
+           , md
+               """
 
 
 
-            (We're half way. Questions so far?)
+               (We're half way. Questions so far?)
 
 
 
-            """
-        , md
-            """
-            [image: lineitem datepicker object <=> main date picker object ]
+               """
+           , md
+               """
+               [image: lineitem datepicker object <=> main date picker object ]
 
-            -> Objects form a network of interactions that can have loops
-            -> It's difficult to think about, and difficult to maintain
-            """
-        , md
-            """
-            -> A pure function is a uni-directional pipe
+               -> Objects form a network of interactions that can have loops
+               -> It's difficult to think about, and difficult to maintain
+               """
+           , md
+               """
+               -> A pure function is a uni-directional pipe
 
-            [image: input -> ]==function==[ -> output]
+               [image: input -> ]==function==[ -> output]
 
-            All that matters is what goes in, and what gets out.
+               All that matters is what goes in, and what gets out.
 
-            **Nothing else can affect it or be affected by it.**
+               **Nothing else can affect it or be affected by it.**
 
-            -> When you assemble together pure functions, it's very easy to follow the flow
-            """
-        , md
-            -- a reducer is a fancy name for a function that takes the old state and produces a new state
-            """
-            [image
-              external events + oldState
-                |
-                V
-              ]=="reducer"==[ <--- split in many functions
-                |
-                V
-              new state + side effects
-                |
-                V
-              ]==render==[ <--- also split in many functions
-                |
-                V
-                DOM -> external events
-            """
-        ]
-
-
-x =
-    """
-  -> Producing every time an entirely new state is definitely a drawback, but the advantages are worth it, and it’s why everything is moving in that direction
-  -> Sometimes it's ok to have stateful components
-  -> Often the state is so simple that it's not worth to extract it and involve Redux and all its boilerplate
+               -> When you assemble together pure functions, it's very easy to follow the flow
+               """
+           , md
+               -- a reducer is a fancy name for a function that takes the old state and produces a new state
+               """
+               [image
+                 external events + oldState
+                   |
+                   V
+                 ]=="reducer"==[ <--- split in many functions
+                   |
+                   V
+                 new state + side effects
+                   |
+                   V
+                 ]==render==[ <--- also split in many functions
+                   |
+                   V
+                   DOM -> external events
+               """
+           ]
 
 
-  -> Use pipes instead of webs
+   x =
+       """
+     -> Producing every time an entirely new state is definitely a drawback, but the advantages are worth it, and it’s why everything is moving in that direction
+     -> Sometimes it's ok to have stateful components
+     -> Often the state is so simple that it's not worth to extract it and involve Redux and all its boilerplate
 
 
+     -> Use pipes instead of webs
 
 
 
 
 
-#
-
-  [ messages from the world + oldState -> "reducer" function (broken in sub-functions) ->  newState -> render functions -> Html the user can interact with ]
-  -> pure functions form a unidirectional assembly of pipes
-
-  ^ This is advantage #1 of "purity" and immutability: it's really easy to follow the flow
 
 
-#
-  Advantage #2: testing
+   #
+
+     [ messages from the world + oldState -> "reducer" function (broken in sub-functions) ->  newState -> render functions -> Html the user can interact with ]
+     -> pure functions form a unidirectional assembly of pipes
+
+     ^ This is advantage #1 of "purity" and immutability: it's really easy to follow the flow
 
 
-#
-  There are other advantages, but they don't really apply to js
-    * reference comparison
-    * caching
-    * concurrency
+   #
+     Advantage #2: testing
 
 
-#
-  Disadvantages
-    * modifying state is a lot more complicated
-    * raw computation can often be less efficient
-      (but in the FE it is more important to render efficiently)
+   #
+     There are other advantages, but they don't really apply to js
+       * reference comparison
+       * caching
+       * concurrency
+
+
+   #
+     Disadvantages
+       * modifying state is a lot more complicated
+       * raw computation can often be less efficient
+         (but in the FE it is more important to render efficiently)
 
 
 
-Union types: crocus questions
-Union type: loading, error, available
-"""
+   Union types: crocus questions
+   Union type: loading, error, available
+   """
 -}
