@@ -261,8 +261,6 @@ main =
               ...
             ]
             ```
-
-            ➡ A good model helps *thinking* about the problem!
             """
         , md
             -- We don't need to test for loss of consistency
@@ -294,12 +292,9 @@ main =
         , md
             -- FIRST we model the state, THEN we think about render and update
             """
-            ## Make Unwanted States Impossible
-
             ➡ **Model first**
 
-            ➡ This makes sense only with a Virtual Dom like React
-
+            ➡ A good model helps *thinking* about the problem!
             """
         , md
             """
