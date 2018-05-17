@@ -125,41 +125,26 @@ main =
             """
         , md
             """
-            [image: datepicker}
+            ![datepicker](images/single-datepicker.svg)
 
             * `getDates()`
             * `setDates()`
             * `onDateChange()`
 
-            -> In OOP the internal variables are *inaccessible*
+            ➡ In OOP the internal variables are *inaccessible*
             """
         , md
             -- We can get an idea of the flow of state update calls
             -- It looks simple enough
             -- Many things had to change when a date changed, some sync and some async (availability, costs...)
             """
-            [image:
-              * main datepicker
-                A |
-                | |
-                | V
-              * line item 1 datepicker
-              * line item 2 datepicker
-              * line item 3 datepicker
-              * ...
-            ]
+            ![oop update flow](images/oop-update-flow.svg)
             """
         , md
             -- We could not keep the datepickers in sync
             -- Felt like a Whac-a-mole
             """
-            [image:
-              * main datepicker WITH HIGHLIGHTED WRONG DATE
-              * line item 1 datepicker
-              * line item 2 datepicker
-              * line item 3 datepicker
-              * ...
-            ]
+            ![inconsistency](images/inconsistency.svg)
             """
         , md
             """
@@ -168,17 +153,17 @@ main =
         , md
             """
             The problem: Keep consistency **across** Objects
-            -> The network of update calls is unmaintainable
+            ➡ The network of update calls is unmaintainable
             """
         , md
             """
             What is "state"?
 
-            -> *Anything* that can change in our application without changing your source code
+            ➡ *Anything* that can change in our application without changing your source code
 
             OR
 
-            -> The collection of all the mutable information we need to render the page
+            ➡ The collection of all the mutable information we need to render the page
             """
         , md
             -- So what's the state for our page?
@@ -191,7 +176,7 @@ main =
               * line item 3 datepicker `start: 2011-01-01, end: 2011-02-02`
               * ...
             ]
-            -> Let's define  our problem in terms of the app state
+            ➡ Let's define  our problem in terms of the app state
             """
         , md
             """
@@ -203,9 +188,9 @@ main =
               * ...
             ]
 
-            -> Is this enough info to display all that we want to display?
+            ➡ Is this enough info to display all that we want to display?
 
-            -> This is NOT how OOP works!
+            ➡ This is NOT how OOP works!
             """
         , md
             """
@@ -217,7 +202,7 @@ main =
             ]
 
             ```
-            -> Our state CANNOT express an inconsistecy between main and lineitems
+            ➡ Our state CANNOT express an inconsistecy between main and lineitems
             """
         , md
             """
@@ -235,20 +220,20 @@ main =
               onChange: (start, end) => clampAllLineItems(start, end),
             })
 
-            -> How do you test for loss of consistency?
+            ➡ How do you test for loss of consistency?
 
-            -> State update becomes an atomic operation
+            ➡ State update becomes an atomic operation
             ```
             """
         , md
             """
-            -> This requires a Virtual Dom like React
+            ➡ This requires a Virtual Dom like React
 
-            -> In OOP, the Object decides when to rerender
+            ➡ In OOP, the Object decides when to rerender
 
-            -> In React, React does
+            ➡ In React, React does
 
-            -> React removes the responsibility of rendering from the Object
+            ➡ React removes the responsibility of rendering from the Object
             """
         , md
             """
@@ -261,7 +246,7 @@ main =
               ...
             ]
             ```
-            -> This model can represent two open datepickers
+            ➡ This model can represent two open datepickers
             """
         , md
             """
@@ -289,17 +274,17 @@ main =
               onChange: (start, end) => this.clampAllLineItems(start, end),
             }} />
             ```
-            -> The act of opening a dropdown **closes all others**
+            ➡ The act of opening a dropdown **closes all others**
             """
         , md
             """
             Rules of thumb:
 
-            -> Don't extract state unnecessarily
+            ➡ Don't extract state unnecessarily
 
-            -> Do it if it allows to make unwanted states impossible
+            ➡ Do it if it allows to make unwanted states impossible
 
-            -> Do it if it needs to be accessed by the parent component
+            ➡ Do it if it needs to be accessed by the parent component
 
             """
         , md
@@ -307,11 +292,11 @@ main =
             """
             ## Make Unwanted States Impossible
 
-            -> **Model first**
+            ➡ **Model first**
 
-            -> This makes sense only with a Virtual Dom like React
+            ➡ This makes sense only with a Virtual Dom like React
 
-            -> ML types and static type check allow to crank this technique up to 11
+            ➡ ML types and static type check allow to crank this technique up to 11
             """
         ]
 
