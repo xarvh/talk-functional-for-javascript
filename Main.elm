@@ -121,13 +121,7 @@ main =
             -- There is one start/end datepicker for each line item
             -- There is a main start/end datepicker
             """
-            [image:
-              * main datepicker
-              * line item 1 datepicker
-              * line item 2 datepicker
-              * line item 3 datepicker
-              * ...
-            ]
+            ![asp](images/advertiser-selection-page.svg)
             """
         , md
             """
